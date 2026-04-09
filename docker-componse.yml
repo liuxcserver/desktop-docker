@@ -1,5 +1,5 @@
 services:
-  linux-gpu-vm:
+  desktop-docker:
     image: liuxcserver/desktop-docker:latest
     restart: always
     # 特权模式：允许容器访问宿主机硬件设备
