@@ -1,0 +1,24 @@
+services:
+  linux-gpu-vm:
+    image: liuxcserver/desktop-docker:latest
+    restart: always
+    # 特权模式：允许容器访问宿主机硬件设备
+    privileged: true
+    ports:
+      - "6080:6080"   # 浏览器访问: http://IP:6080
+      - "3389:3389"   # RDP 远程桌面: 127.0.0.1:3389
+    volumes:
+      # 核心：挂载根目录卷，实现系统级持久化（软件安装、配置修改都在这）
+      - desktop-docker-disk:/
+      # 可选：挂载共享文件夹
+      - ./shared-data:/root/shared
+    devices:
+      # 透传 Intel 显卡设备 (N150 核显)
+      - /dev/dri:/dev/dri
+    environment:
+      - TZ=Asia/Shanghai
+      # 告诉系统使用 Intel 媒体驱动
+      - LIBVA_DRIVER_NAME=iHD
+
+volumes:
+  desktop-docker-disk:
