@@ -6,40 +6,49 @@ ENV LANG=zh_CN.UTF-8
 ENV LANGUAGE=zh_CN:zh
 ENV LC_ALL=zh_CN.UTF-8
 
-# 1. 优化软件源配置 (针对 GitHub Actions 环境优化)
-# GitHub Actions 连接 Debian 官方源通常很快，但为了防止 SSL 错误或偶发断连，
-# 我们保留官方源，但增加 apt 配置以禁用严格的安全检查（仅在构建时），并增加重试。
-RUN echo 'Acquire::Retries "3";' > /etc/apt/apt.conf.d/80-retries && \
-    apt-get update -o Acquire::https::AllowInsecure=true && \
-    apt-get install -y --no-install-recommends \
-    xfce4 \
-    xfce4-goodies \
-    xterm \
-    locales \
-    fonts-wqy-zenhei \
-    fonts-wqy-microhei \
-    dbus-x11 \
-    supervisor \
+RUN apt-get update
+
+# 2. 安装基础系统工具和依赖
+# 这些是运行桌面和远程服务的基础，先安装它们
+RUN apt-get install -y --no-install-recommends \
     curl \
     wget \
     xz-utils \
-    # GPU 驱动 (Intel Media Driver for N150)
+    supervisor \
+    dbus-x11 \
+    locales \
+    ca-certificates
+
+# 3. 安装中文字体
+RUN apt-get install -y --no-install-recommends \
+    fonts-wqy-zenhei \
+    fonts-wqy-microhei
+
+# 4. 安装 XFCE4 桌面环境
+# 桌面环境比较大，单独一行，方便观察进度
+RUN apt-get install -y --no-install-recommends \
+    xfce4 \
+    xfce4-goodies \
+    xterm
+
+# 5. 安装 GPU 驱动和远程桌面服务
+# 驱动和 xrdp 放在最后
+RUN apt-get install -y --no-install-recommends \
     intel-media-driver \
     vainfo \
     libmfx1 \
-    # 远程桌面
     xrdp \
-    xorgxrdp \
-    && rm -rf /var/lib/apt/lists/*
+    xorgxrdp
+
+# 6. 清理缓存
+# 分步执行后，最后统一清理，确保镜像体积最小
+RUN rm -rf /var/lib/apt/lists/*
 
 # 2. 生成中文 Locale
 RUN sed -i '/zh_CN.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 
-# 3. 安装 KasmVNC (增加重试逻辑)
-# GitHub Actions 下载外部文件偶尔会超时，使用循环重试
-RUN for i in 1 2 3; do \
-        wget -qO - https://www.kasmweb.com/downloads/vnc/debian/kasmvnc_debian_bookworm_1.3.0_amd64.deb -O /tmp/kasmvnc.deb && break || sleep 5; \
-    done && \
+# 3. 安装 KasmVNC (用于 Web 访问)
+RUN wget -qO - https://www.kasmweb.com/downloads/vnc/debian/kasmvnc_debian_bookworm_1.3.0_amd64.deb -O /tmp/kasmvnc.deb && \
     dpkg -i /tmp/kasmvnc.deb && \
     rm /tmp/kasmvnc.deb
 
