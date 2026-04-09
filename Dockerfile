@@ -47,13 +47,16 @@ RUN for i in 1 2 3; do \
 # 6. 清理缓存
 RUN rm -rf /var/lib/apt/lists/*
 
-# 7. 安装 KasmVNC (增加重试逻辑)
-# GitHub Actions 下载外部文件偶尔会超时，使用循环重试
-RUN for i in 1 2 3; do \
-        wget -qO - https://www.kasmweb.com/downloads/vnc/debian/kasmvnc_debian_bookworm_1.3.0_amd64.deb -O /tmp/kasmvnc.deb && break || sleep 5; \
-    done && \
-    dpkg -i /tmp/kasmvnc.deb && \
-    rm /tmp/kasmvnc.deb
+# 3. 编译安装 KasmVNC (使用源码)
+# 这种方式比下载 deb 包更稳定
+WORKDIR /tmp
+RUN git clone --depth 1 --branch v1.3.0 https://github.com/kasmtech/KasmVNC.git kasmvnc && \
+    cd kasmvnc && \
+    mkdir build && cd build && \
+    cmake .. -DENABLE_GNUTLS=ON -DENABLE_XORG=DONOT -DENABLE_JPEG=ON && \
+    make -j$(nproc) && \
+    make install && \
+    cd ../.. && rm -rf kasmvnc
 
 # 8. 复制配置文件
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
