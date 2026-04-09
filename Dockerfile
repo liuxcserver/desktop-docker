@@ -50,13 +50,14 @@ RUN rm -rf /var/lib/apt/lists/*
 # 3. 编译安装 KasmVNC (使用源码)
 # 这种方式比下载 deb 包更稳定
 WORKDIR /tmp
-RUN git clone --depth 1 --branch v1.3.0 https://github.com/kasmtech/KasmVNC.git kasmvnc && \
-    cd kasmvnc && \
-    mkdir build && cd build && \
-    cmake .. -DENABLE_GNUTLS=ON -DENABLE_XORG=DONOT -DENABLE_JPEG=ON && \
-    make -j$(nproc) && \
-    make install && \
-    cd ../.. && rm -rf kasmvnc
+RUN apt-get install -y --no-install-recommends \
+        # VNC 服务端 (TigerVNC)
+        tigervnc-standalone-server \
+        tigervnc-common \
+        # noVNC (Web 访问)
+        novnc \
+        python3 \
+        net-tools
 
 # 8. 复制配置文件
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
