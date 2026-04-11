@@ -46,7 +46,7 @@ RUN echo "zh_CN.UTF-8 UTF-8" > /etc/locale.gen
 RUN locale-gen
 ENV LANG=zh_CN.UTF-8
 # 移除apt list缓存
-RUN apt-get remove -y wget bsdtar && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /tmp/*.tar.gz
+RUN apt-get remove -y wget && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /tmp/*.tar.gz
 
 # todo 安装115网盘 + telegram
 
