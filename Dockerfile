@@ -25,8 +25,13 @@ RUN apt-get install -y \
 RUN apt-get install -y supervisor sudo
 
 # 生成中文 Locale (解决语言环境变量报错)
-RUN sed -i -e 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen && \
-    locale-gen
+# --- 修复中文 Locale 支持 ---
+# 1. 先安装 locales 包 (很多精简镜像默认不带这个命令)
+RUN apt-get install -y locales && \
+    # 2. 强制生成 zh_CN.UTF-8 (不管原文件里有没有这行,直接生成)
+    locale-gen zh_CN.UTF-8 && \
+    # 3. 更新系统默认配置
+    update-locale LANG=zh_CN.UTF-8 LANGUAGE=zh_CN:zh
 
 # 移除apt list缓存
 RUN rm -rf /var/lib/apt/lists/*
