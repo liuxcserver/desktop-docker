@@ -15,7 +15,7 @@ RUN apt-get install -y --no-install-recommends \
     # 字体和终端
     xterm fonts-wqy-zenhei \
     # 远程服务
-    xrdp x11vnc \
+    xrdp x11vnc dbus-x11 \
     # --- 关键图形库开始 ---
     libgl1-mesa-dri libgbm1 mesa-va-drivers
     # --- 关键图形库结束 ---
