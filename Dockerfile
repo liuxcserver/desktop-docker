@@ -11,7 +11,7 @@ RUN apt-get update
 # 安装桌面环境 + 关键图形库
 RUN apt-get install -y --no-install-recommends \
     # 桌面环境
-    xfce4 xfce4-goodies  \
+    xfce4 xfce4-goodies xvfb \
     # 字体和终端
     xterm fonts-wqy-zenhei \
     # 远程服务
