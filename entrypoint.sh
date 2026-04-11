@@ -85,7 +85,7 @@ fi
 # 2. 输入密码 (设置查看密码 - 虽然我们要拒绝它，但 vncpasswd 会先问)
 # 3. 输入 'n' (拒绝设置查看密码)
 VNC_PASS=${VNC_PASS:-123456}
-printf "%s\n%s\nn\n" "$VNC_PASS" "$VNC_PASS" | vncpasswd -f > /tmp/vnc.passwd
+x11vnc -storepasswd "$VNC_PASS" /tmp/vnc.passwd
 
 # 修改权限
 chown $TARGET_UID:$TARGET_GID /tmp/vnc.passwd
