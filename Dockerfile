@@ -32,7 +32,7 @@ RUN unzip /tmp/noVNC.zip -d /usr/share/noVNC
 RUN mv /usr/share/noVNC/noVNC-master/* /usr/share/noVNC/
 RUN rm -rf /usr/share/noVNC/noVNC-master
 
-RUN unzip  /tmp/websockify.zip -d /usr/share/websockify --strip-components=1
+RUN unzip  /tmp/websockify.zip -d /usr/share/websockify
 RUN mv /usr/share/websockify/websockify-master/* /usr/share/websockify/
 RUN rm -rf /usr/share/websockify/websockify-master
 
