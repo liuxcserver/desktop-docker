@@ -91,6 +91,9 @@ x11vnc -storepasswd "$VNC_PASS" /tmp/vnc.passwd
 chown $TARGET_UID:$TARGET_GID /tmp/vnc.passwd
 chmod 600 /tmp/vnc.passwd
 
+# 添Desktop添加桌面快捷方式
+su - app -c "mkdir ~/Desktop/ && cp /usr/Desktop/* ~/Desktop/"
+
 # --- 6. 启动 ---
 echo "✅ 启动服务 ..."
 # 创建普通用户日志目录

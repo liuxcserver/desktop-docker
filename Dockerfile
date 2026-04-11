@@ -20,7 +20,7 @@ RUN apt-get install -y --no-install-recommends \
     libgl1-mesa-dri libgbm1 libpam-systemd
     # --- 关键图形库结束 ---
 # 工具
-RUN apt-get install -y --no-install-recommends supervisor sudo wget ca-certificates unzip
+RUN apt-get install -y --no-install-recommends supervisor sudo wget ca-certificates unzip curl xz-utils
 
 RUN wget -O /tmp/noVNC.zip https://github.com/novnc/noVNC/archive/refs/heads/master.zip
 RUN wget -O /tmp/websockify.zip https://github.com/novnc/websockify/archive/refs/heads/master.zip
@@ -45,10 +45,25 @@ RUN apt-get install -y --no-install-recommends locales
 RUN echo "zh_CN.UTF-8 UTF-8" > /etc/locale.gen
 RUN locale-gen
 ENV LANG=zh_CN.UTF-8
-# 移除apt list缓存
-RUN apt-get remove -y wget unzip && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /tmp/*.tar.gz
 
 # todo 安装115网盘 + telegram
+RUN curl -o /tmp/telegram.tar.xz https://td.telegram.org/tlinux/tsetup.6.7.5.tar.xz
+RUN mkdir -p /usr/telegram
+RUN tar -xJvf /tmp/telegram.tar.xz -C /usr
+
+RUN curl -o /tmp/115.deb https://down.115.com/client/115pc/lin/115br_v36.0.0.deb
+RUN apt-get install -y --no-install-recommends libnss3 libasound2
+RUN apt install -y /tmp/115.deb
+
+# 移除apt list缓存
+RUN apt-get remove -y wget unzip curl xz-utils
+RUN apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /tmp/*
+
+# 软件图标
+RUN mkdir -p /usr/ico
+RUN mkdir -p /usr/Desktop
+COPY ico/* /usr/ico
+COPY Desktop/* /usr/Desktop
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY entrypoint.sh /entrypoint.sh

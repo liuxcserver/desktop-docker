@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=115
+Comment=115 Desktop Messenger
+Exec=/usr/local/115Browser/115.sh
+Icon=/usr/ico/115.ico
+Type=Application
+Categories=Network;InstantMessaging;
+Terminal=false
+StartupNotify=true
