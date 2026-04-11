@@ -1,73 +1,42 @@
+# 基础环境
 FROM debian:bookworm-slim
 
-# 设置环境变量
+# 设置时区和语言
+ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND=noninteractive
-ENV LANG=zh_CN.UTF-8
-ENV LANGUAGE=zh_CN:zh
-ENV LC_ALL=zh_CN.UTF-8
 
-# 1. 优化软件源配置 (针对 GitHub Actions 环境优化)
-# GitHub Actions 连接 Debian 官方源通常很快，但为了防止 SSL 错误或偶发断连，
-# 我们增加 apt 配置以禁用严格的安全检查（仅在构建时），并增加重试。
-RUN echo 'Acquire::Retries "3";' > /etc/apt/apt.conf.d/80-retries && \
-    apt-get update -o Acquire::https::AllowInsecure=true
+# ---------------------------------------------------------------------------------------------------------------------
+# 更新apt list
+RUN apt-get update
 
-# 2. 安装基础系统工具和依赖
-RUN apt-get install -y --no-install-recommends \
-    curl \
-    wget \
-    xz-utils \
-    supervisor \
-    dbus-x11 \
-    locales \
-    ca-certificates
+# 安装桌面环境 + 关键图形库
+RUN apt-get install -y \
+    # 桌面环境
+    xfce4 xfce4-goodies  \
+    # 字体和终端
+    xterm fonts-wqy-zenhei \
+    # 远程服务
+    xrdp x11vnc novnc websockify \
+    # --- 关键图形库开始 ---
+    libgl1-mesa-dri libgbm1 mesa-va-drivers
+    # --- 关键图形库结束 ---
 
-# 3. 安装中文字体
-RUN apt-get install -y --no-install-recommends \
-    fonts-wqy-zenhei \
-    fonts-wqy-microhei
+# 工具
+RUN apt-get install -y supervisor sudo
 
-# 4. 安装 XFCE4 桌面环境
-RUN apt-get install -y --no-install-recommends \
-    xfce4 \
-    xfce4-goodies \
-    xterm
+# 生成中文 Locale (解决语言环境变量报错)
+RUN sed -i -e 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen
 
-# 5. 安装 GPU 驱动和远程桌面服务
-# 这一步最容易失败，我们给它单独加一个重试循环
-RUN for i in 1 2 3; do \
-        apt-get install -y --no-install-recommends \
-        intel-media-driver \
-        vainfo \
-        libmfx1 \
-        xrdp \
-        xorgxrdp && break || sleep 10; \
-    done
-
-# 6. 清理缓存
+# 移除apt list缓存
 RUN rm -rf /var/lib/apt/lists/*
 
-# 3. 编译安装 KasmVNC (使用源码)
-# 这种方式比下载 deb 包更稳定
-WORKDIR /tmp
-RUN apt-get install -y --no-install-recommends \
-        # VNC 服务端 (TigerVNC)
-        tigervnc-standalone-server \
-        tigervnc-common \
-        # noVNC (Web 访问)
-        novnc \
-        python3 \
-        net-tools
+# todo 安装115网盘 + telegram
 
-# 8. 复制配置文件
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY start.sh /start.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# 9. 设置权限
-RUN chmod +x /start.sh
+EXPOSE 3389 6080
 
-# 10. 暴露端口
-EXPOSE 5900 3389 6901
-
-# 启动命令
-CMD ["/start.sh"]
+CMD ["/entrypoint.sh"]
