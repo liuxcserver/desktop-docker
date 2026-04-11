@@ -79,6 +79,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
 fi
 
 # 1. 以当前用户（root）生成文件
+VNC_PASS=${VNC_PASS:-123465}
 echo "$VNC_PASS" | vncpasswd -f > /tmp/vnc.passwd
 
 # 2. 把文件的所有权移交给 app 用户
