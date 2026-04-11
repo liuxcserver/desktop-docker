@@ -1,27 +1,21 @@
-version: '3.8'
-
 services:
   debian-desktop:
-    build: .
+    image: liuxcserver/desktop-docker:latest
     container_name: debian-desktop
     hostname: debian-desktop
     privileged: true # 需要特权模式以支持 systemd 或某些硬件访问
     network_mode: bridge
     # 环境变量配置
     environment:
-      - USER_NAME=app  # 默认密码，可在此修改
-      - USER_PASS=app  # 默认密码，可在此修改
+      - USER_NAME=appuser  # 默认用户,可修改
+      - USER_PASS=123456  # 默认用户,可修改
+      - VNC_PASS=123456  # 默认vnc密码, 可修改
       - LANG=zh_CN.UTF-8
     # 端口映射
     ports:
-      - "43389:3389"   # Windows 远程桌面
       - "46080:6080"   # Web 访问 (noVNC)
     # 持久化用户home目录
     volumes:
-      - ./config:/config
-    # 硬件加速配置 (Intel N150)
-    # 将宿主机的显卡设备直通给容器
-    devices:
-      - /dev/dri:/dev/dri
+      - /vol1/1000/space/docker/debian-desktop/config:/config
     # 重启策略
     restart: unless-stopped
