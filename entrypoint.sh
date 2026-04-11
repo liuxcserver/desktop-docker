@@ -78,6 +78,12 @@ if [ ! -f "$CONFIG_FILE" ]; then
     chown $TARGET_UID:$TARGET_GID "$CONFIG_FILE"
 fi
 
+# 1. 以当前用户（root）生成文件
+echo "$VNC_PASS" | vncpasswd -f > /tmp/vnc.passwd
+
+# 2. 把文件的所有权移交给 app 用户
+chown $TARGET_UID:$TARGET_GID /tmp/vnc.passwd
+
 # --- 6. 启动 ---
 echo "✅ 启动服务 ..."
 # 创建普通用户日志目录
