@@ -24,10 +24,14 @@ RUN apt-get install -y --no-install-recommends supervisor sudo
 # 生成中文 Locale (解决语言环境变量报错)
 # --- 修复中文 Locale 支持 ---
 # 1. 先安装 locales 包 (很多精简镜像默认不带这个命令)
-RUN apt-get install -y --no-install-recommends locales
-RUN locale-gen zh_CN.UTF-8
-RUN update-locale LANG=zh_CN.UTF-8 LANGUAGE=zh_CN:zh
-
+RUN apt-get install -y --no-install-recommends \
+        xfce4 xfce4-goodies \
+        # 加上这个,它包含了中文界面的翻译文件
+        xfce4-l10n \
+        locales && \
+    echo "zh_CN.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen && \
+    echo "LANG=zh_CN.UTF-8" > /etc/default/locale
 # 移除apt list缓存
 RUN rm -rf /var/lib/apt/lists/*
 
