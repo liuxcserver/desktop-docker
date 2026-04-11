@@ -80,4 +80,6 @@ fi
 
 # --- 6. 启动 ---
 echo "✅ 启动服务 ..."
+# 创建普通用户日志目录
+mkdir -p /config/logs/supervisor
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
