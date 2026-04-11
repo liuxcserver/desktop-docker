@@ -17,7 +17,7 @@ RUN apt-get install -y --no-install-recommends \
     # 远程服务
     x11vnc dbus-x11 \
     # --- 关键图形库开始 ---
-    libgl1-mesa-dri libgbm1 intel-media-driver libpam-systemd
+    libgl1-mesa-dri libgbm1 libpam-systemd
     # --- 关键图形库结束 ---
 # 工具
 RUN apt-get install -y --no-install-recommends supervisor sudo wget ca-certificates unzip
