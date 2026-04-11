@@ -29,7 +29,7 @@ RUN wget -O /tmp/websockify.tar.gz https://github.com/novnc/websockify/archive/r
 RUN mkdir -p /usr/share/noVNC /usr/share/websockify
 RUN tar -xzf /tmp/noVNC.tar.gz -C /usr/share/noVNC --strip-components=1
 RUN tar -xzf /tmp/websockify.tar.gz -C /usr/share/websockify --strip-components=1
-RUN mv /usr/share/websockify /usr/share/novnc/utils/websockify
+RUN mv /usr/share/websockify /usr/share/noVNC/utils/websockify
 
 # 生成中文 Locale (解决语言环境变量报错)
 # --- 修复中文 Locale 支持 ---
