@@ -78,12 +78,18 @@ if [ ! -f "$CONFIG_FILE" ]; then
     chown $TARGET_UID:$TARGET_GID "$CONFIG_FILE"
 fi
 
-# 1. 以当前用户（root）生成文件
-VNC_PASS=${VNC_PASS:-123465}
-echo "$VNC_PASS" | vncpasswd -f > /tmp/vnc.passwd
 
-# 2. 把文件的所有权移交给 app 用户
+
+# 逻辑：
+# 1. 输入密码 (设置控制密码)
+# 2. 输入密码 (设置查看密码 - 虽然我们要拒绝它，但 vncpasswd 会先问)
+# 3. 输入 'n' (拒绝设置查看密码)
+VNC_PASS=${VNC_PASS:-123456}
+printf "%s\n%s\nn\n" "$VNC_PASS" "$VNC_PASS" | vncpasswd -f > /tmp/vnc.passwd
+
+# 修改权限
 chown $TARGET_UID:$TARGET_GID /tmp/vnc.passwd
+chmod 600 /tmp/vnc.passwd
 
 # --- 6. 启动 ---
 echo "✅ 启动服务 ..."
