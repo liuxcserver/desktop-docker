@@ -20,15 +20,15 @@ RUN apt-get install -y --no-install-recommends \
     libgl1-mesa-dri libgbm1 mesa-va-drivers
     # --- 关键图形库结束 ---
 # 工具
-RUN apt-get install -y --no-install-recommends supervisor sudo wget ca-certificates
+RUN apt-get install -y --no-install-recommends supervisor sudo wget ca-certificates unzip
 
-RUN wget -O /tmp/noVNC.tar.gz https://github.com/novnc/noVNC/archive/refs/tags/v1.6.0.tar.gz
-RUN wget -O /tmp/websockify.tar.gz https://github.com/novnc/websockify/archive/refs/tags/v0.13.0.tar.gz
+RUN wget -O /tmp/noVNC.tar.gz https://github.com/novnc/noVNC/archive/refs/heads/master.zip
+RUN wget -O /tmp/websockify.tar.gz https://github.com/novnc/websockify/archive/refs/heads/master.zip
 
 # 解压
 RUN mkdir -p /usr/share/noVNC /usr/share/websockify
-RUN tar -xzf /tmp/noVNC.tar.gz -C /usr/share/noVNC --strip-components=1
-RUN tar -xzf /tmp/websockify.tar.gz -C /usr/share/websockify --strip-components=1
+RUN unzip /tmp/noVNC.zip -d /usr/share/noVNC
+RUN unzip /tmp/websockify.tar.gz -d /usr/share/websockify
 RUN mv /usr/share/websockify /usr/share/noVNC/utils/websockify
 
 # 生成中文 Locale (解决语言环境变量报错)
@@ -39,7 +39,7 @@ RUN echo "zh_CN.UTF-8 UTF-8" > /etc/locale.gen
 RUN locale-gen
 ENV LANG=zh_CN.UTF-8
 # 移除apt list缓存
-RUN apt-get remove -y wget && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /tmp/*.tar.gz
+RUN apt-get remove -y wget unzip && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /tmp/*.tar.gz
 
 # todo 安装115网盘 + telegram
 
