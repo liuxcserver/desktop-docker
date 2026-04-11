@@ -22,13 +22,13 @@ RUN apt-get install -y --no-install-recommends \
 # 工具
 RUN apt-get install -y --no-install-recommends supervisor sudo wget ca-certificates unzip
 
-RUN wget -O /tmp/noVNC.tar.gz https://github.com/novnc/noVNC/archive/refs/heads/master.zip
-RUN wget -O /tmp/websockify.tar.gz https://github.com/novnc/websockify/archive/refs/heads/master.zip
+RUN wget -O /tmp/noVNC.zip https://github.com/novnc/noVNC/archive/refs/heads/master.zip
+RUN wget -O /tmp/websockify.zip https://github.com/novnc/websockify/archive/refs/heads/master.zip
 
 # 解压
 RUN mkdir -p /usr/share/noVNC /usr/share/websockify
 RUN unzip /tmp/noVNC.zip -d /usr/share/noVNC
-RUN unzip /tmp/websockify.tar.gz -d /usr/share/websockify
+RUN unzip /tmp/websockify.zip -d /usr/share/websockify
 RUN mv /usr/share/websockify /usr/share/noVNC/utils/websockify
 
 # 生成中文 Locale (解决语言环境变量报错)
