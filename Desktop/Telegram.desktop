@@ -2,7 +2,7 @@
 Version=1.0
 Name=Telegram
 Comment=Telegram Desktop Messenger
-Exec=/usr/telegram/Telegram/Telegram
+Exec=/usr/Telegram/Telegram
 Icon=/usr/ico/telegram.ico
 Type=Application
 Categories=Network;InstantMessaging;
