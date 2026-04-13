@@ -5,7 +5,25 @@ FROM debian:bookworm-slim
 ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND=noninteractive
 
-# ---------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------
+# 安装最新显卡驱动
+# 1. 添加 Trixie 源到 sources.list
+# 注意：在 Docker 中直接 echo 到 /etc/apt/sources.list 是最快的方法
+RUN echo "deb http://deb.debian.org/debian trixie main" > /etc/apt/sources.list.d/trixie.list
+# 2. 设置 APT Pinning (优先级)
+RUN echo -e "Package: *\nPin: release n=trixie\nPin-Priority: 50" > /etc/apt/preferences.d/trixie
+# 3.更新索引并从 Trixie 安装新版驱动和依赖
+# 我们把驱动、vainfo 和核心库一起列出来，确保版本匹配
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends -t trixie \
+    intel-media-va-driver \
+    libva2 \
+    libva-drm2 \
+    libva-x11-2 \
+    libva-wayland2 \
+    && rm -rf /var/lib/apt/lists/*
+#--------------------------------------------------------------------------------------------------------------------
+
 # 更新apt list
 RUN apt-get update
 # 安装桌面环境 + 关键图形库
@@ -67,6 +85,8 @@ COPY Desktop/* /usr/Desktop
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY entrypoint.sh /entrypoint.sh
+COPY create_groups.sh /create_groups.sh
+COPY create_user.sh /create_user.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 3389 6080
