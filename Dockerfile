@@ -42,7 +42,7 @@ RUN echo "zh_CN.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 
 # 安装115网盘 + telegram
 RUN curl -o /tmp/telegram.tar.xz https://td.telegram.org/tlinux/tsetup.6.7.6.tar.xz && \
-    RUN mkdir -p /usr/telegram && \
+    mkdir -p /usr/telegram && \
     tar -xJvf /tmp/telegram.tar.xz -C /usr && \
     curl -o /tmp/115.deb https://down.115.com/client/115pc/lin/115br_v36.0.0.deb && \
     apt install -y /tmp/115.deb
