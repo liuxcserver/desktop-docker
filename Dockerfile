@@ -29,8 +29,8 @@ RUN wget -O /tmp/noVNC.zip https://github.com/novnc/noVNC/archive/refs/heads/mas
     wget -O /tmp/websockify.zip https://github.com/novnc/websockify/archive/refs/heads/master.zip && \
     mkdir -p /usr/share/noVNC /usr/share/websockify && \
     unzip /tmp/noVNC.zip -d /usr/share/noVNC && \
-    RUN mv /usr/share/noVNC/noVNC-master/* /usr/share/noVNC/ && \
-    RUN rm -rf /usr/share/noVNC/noVNC-master && \
+    mv /usr/share/noVNC/noVNC-master/* /usr/share/noVNC/ && \
+    rm -rf /usr/share/noVNC/noVNC-master && \
     unzip  /tmp/websockify.zip -d /usr/share/websockify && \
     mv /usr/share/websockify/websockify-master/* /usr/share/websockify/ && \
     rm -rf /usr/share/websockify/websockify-master && \
