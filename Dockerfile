@@ -48,7 +48,7 @@ RUN curl -o /tmp/telegram.tar.xz https://td.telegram.org/tlinux/tsetup.6.7.6.tar
     apt install -y /tmp/115.deb
 
 # 移除apt list缓存
-RUN apt-get remove -y wget unzip curl xz-utils \
+RUN apt-get remove -y wget unzip curl xz-utils && \
     apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 # 软件图标
