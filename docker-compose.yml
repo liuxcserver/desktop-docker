@@ -3,7 +3,6 @@ services:
     image: liuxcserver/desktop-docker:latest
     container_name: debian-desktop
     hostname: debian-desktop
-    privileged: true # 需要特权模式以支持 systemd 或某些硬件访问
     network_mode: bridge
     # 环境变量配置
     environment:
