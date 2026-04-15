@@ -20,12 +20,12 @@ RUN apt-get install -y --no-install-recommends \
     # --- 关键图形库结束 ---
 
     # 显卡驱动
-RUN apt-get install -y --no-install-recommends -t \
-        intel-media-va-driver \
-        libva2 \
-        libva-drm2 \
-        libva-x11-2 \
-        libva-wayland2
+#RUN apt-get install -y --no-install-recommends -t \
+#        intel-media-va-driver \
+#        libva2 \
+#        libva-drm2 \
+#        libva-x11-2 \
+#        libva-wayland2
 # 工具
 RUN apt-get install -y --no-install-recommends supervisor sudo wget ca-certificates unzip curl xz-utils
 
